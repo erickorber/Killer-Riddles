@@ -6,24 +6,24 @@ public class CameraMovement : MonoBehaviour {
     private OutlineSystem outline;
     public OutlineSystem boldOutline;
     public GameObject canvas;
-    public float fadeInTime = 1.2f;
+    public static float fadeInTime = 1.2f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    private void Start () {
         outline = GetComponent<OutlineSystem>();
         iTween.CameraFadeAdd();
         iTween.CameraFadeFrom(iTween.Hash("amount", 1, "time", fadeInTime, "oncompletetarget", gameObject,
             "oncomplete", "EnablePlay"));
         player = GameObject.FindGameObjectWithTag("Player").transform;
 	}
-	
-	// Update is called once per frame
-	void LateUpdate () {
+
+    // Update is called once per frame
+    private void LateUpdate () {
         transform.position = new Vector3(player.position.x, transform.position.y, transform.position.z);
         outline.SendMessage("OutlineUpdate");
 	}
 
-    void EnablePlay()
+    private void EnablePlay()
     {
         outline.enabled = true;
         boldOutline.enabled = true;

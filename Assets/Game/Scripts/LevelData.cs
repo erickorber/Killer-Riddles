@@ -16,7 +16,6 @@ public class LevelData : MonoBehaviour {
     public float upperBound;
     public float lowerBound;
     public GameObject canvas;
-    public CameraMovement camMovement;
     public static int highestLevelCompleted;
 
     private void Start ()
@@ -36,9 +35,9 @@ public class LevelData : MonoBehaviour {
         StartCoroutine(ExecuteAfterFade());
     }
 
-    IEnumerator ExecuteAfterFade()
+    private IEnumerator ExecuteAfterFade()
     {
-        yield return new WaitForSeconds(camMovement.fadeInTime);
+        yield return new WaitForSeconds(CameraMovement.fadeInTime);
 
         //Set the UI Riddle Text to the predetermined riddle
         riddleUIText.text = "" + riddle;

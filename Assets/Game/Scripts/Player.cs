@@ -15,11 +15,16 @@ public class Player : MonoBehaviour {
     private CharacterController controller;
     private Transform oldPlayerTransform;
     private Vector3 oldPlayerPos;
+    private new Camera camera;
+    private Vector3 cameraDirection;
 
+    private bool mouseButtonClicked = false;
     public static bool isPlayerAttacking = false;
 
+    private GameObject deathObjectHitByRay;
+
     // Use this for initialization
-    void Start()
+    private void Start()
 	{
         oldPlayerPos = transform.position;
         oldPlayerTransform = transform;
@@ -28,16 +33,12 @@ public class Player : MonoBehaviour {
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         levelData = GameObject.FindGameObjectWithTag("Data").GetComponent<LevelData>();
+        camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        cameraDirection = camera.transform.TransformDirection(Vector3.forward);
     }
 
     // Update is called once per frame
-    void Update () {
-
-        //Right click to attack, as long as no other attack is currently taking place
-        if (anim.GetInteger("Attack_Type") == 0 && Input.GetMouseButtonDown(1))
-        {
-            Attack();
-        }
+    private void Update () {
 
         //Always updating the isPlayerAttacking boolean, so that it can be accessed
         //accurately by other scripts.
@@ -49,12 +50,52 @@ public class Player : MonoBehaviour {
         {
             isPlayerAttacking = false;
         }
-        
+
+        //If the left mouse button has been clicked
+        if (Input.GetMouseButtonDown(0))
+        {
+            mouseButtonClicked = true;
+        }
+
         //Move the player if appropriate
         MovePlayer();
 
         //Have the enemy follow the player's position, but on a delay.
         EnemyFollowsPlayer();
+    }
+
+    private void FixedUpdate()
+    {
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        ray.direction = cameraDirection;
+        RaycastHit hit;
+        Debug.DrawRay(ray.origin, cameraDirection);
+
+        //If the Raycast (coming from the mouse position) hits a collider
+        if (Physics.Raycast(ray, out hit))
+        {
+            //If the collider that has been hit is tagged as a Death Object
+            if (hit.collider.gameObject.tag == "Death Object")
+            {
+                deathObjectHitByRay = hit.collider.gameObject;
+                deathObjectHitByRay.layer = LayerMask.NameToLayer("Hover Outline Objects");
+
+                //If the mouse has been clicked, meaning the death object has been selected...
+                if (mouseButtonClicked)
+                {
+                    Debug.Log("Kill");
+                }
+            }
+            else
+            {
+                if (deathObjectHitByRay != null)
+                {
+                    deathObjectHitByRay.layer = LayerMask.NameToLayer("Game World");
+                }
+            }            
+        }
+
+        mouseButtonClicked = false;
     }
 
     /*

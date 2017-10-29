@@ -6,7 +6,8 @@ public class MainMenu : MonoBehaviour {
 
     public Button playButton;
     private GameObject[] levelButtons;
-    void Start()
+
+    private void Start()
     {
         //Loads the highest level saved. If no save has ever been made, it will load
         //the int 0 by default, which happens to be what's needed.
@@ -41,7 +42,7 @@ public class MainMenu : MonoBehaviour {
      * When the scene starts, as the shot is fading in, the play button is non-interactable, but once the fade
      * has finished, this function is called to make the play button interactable. Just a stylistic touch.
      */
-    void NowPlayable()
+    private void NowPlayable()
     {
         playButton.interactable = true;
     }
@@ -50,7 +51,7 @@ public class MainMenu : MonoBehaviour {
      * When the main menu PLAY BUTTON is pressed AND the tween (moving the camera over to the level selection menu)
      * has been completed, then this function is called
      */
-    void MakeInteractable(Button button)
+    private void MakeInteractable(Button button)
     {
         if(!button.IsInteractable())
         {
@@ -63,7 +64,7 @@ public class MainMenu : MonoBehaviour {
         }
     }
 
-    void LoadLevel(int level)
+    private void LoadLevel(int level)
     {
         LevelData.level = level;
         SceneManager.LoadScene("Office");
